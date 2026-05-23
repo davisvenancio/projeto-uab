@@ -91,7 +91,8 @@ def detalhes(chamado_id):
         flash("Acesso negado.")
         return redirect(url_for("chamados.fila"))
 
-    return render_template("chamados/detalhes.html", os=os)
+    tecnicos = Usuario.query.filter_by(perfil="tecnico").all()
+    return render_template("chamados/detalhes.html", os=os, tecnicos=tecnicos)
 
 @chamados_bp.route("/<int:chamado_id>/atualizar-status", methods=["POST"])
 @login_required(perfis_permitidos=["tecnico"])

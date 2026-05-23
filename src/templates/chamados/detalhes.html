@@ -92,10 +92,11 @@
                     <form method="POST" action="{{ url_for('chamados.delegar', chamado_id=os.id) }}" class="mb-4">
                         <label class="form-label fw-bold">Delegar para Técnico</label>
                         <div class="input-group">
-                            <select name="tecnico_id" class="form-select">
+                            <select name="tecnico_id" class="form-select" required>
                                 <option value="">Selecionar...</option>
-                                <!-- Note: 'tecnicos' variable would need to be passed to this template, or queried -->
-                                <!-- For simplicity in this mock, we assume it's available or handle via context processor -->
+                                {% for t in tecnicos %}
+                                    <option value="{{ t.id }}" {{ 'selected' if os.tecnico_id == t.id }}>{{ t.nome }}</option>
+                                {% endfor %}
                             </select>
                             <button type="submit" class="btn btn-primary">Atribuir</button>
                         </div>

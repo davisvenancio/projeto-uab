@@ -13,7 +13,7 @@ def login_required(perfis_permitidos=None):
                 flash("Sessão expirada. Faça login.")
                 return redirect(url_for("auth.login"))
 
-            usuario = Usuario.query.get(session["usuario_id"])
+            usuario = db.session.get(Usuario, session["usuario_id"])
 
             if not usuario:
                 session.clear()

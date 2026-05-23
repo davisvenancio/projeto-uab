@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title % Drum {{ titulo }} - CondoFix{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ titulo }}</h2>
+    {% if session.usuario_perfil == "morador" %}
+        <a href="{{ url_for('chamados.criar') }}" class="btn btn-success">Novo Chamado</a>
+    {% endif %}
+</div>
+
+{% if session.usuario_perfil == "admin" %}
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="pendente" {{ 'selected' if request.args.get('status') == 'pendente' }}>Pendente</option>
+                    <option value="em_atendimento" {{ 'selected' if request.args.get('status') == 'em_atendimento' }}>Em Atendimento</option>
+                    <option value="concluido" {{ 'selected' if request.args.get('status') == 'concluido' }}>Concluído</option>
+                    <option value="rejeitado" {{ 'selected' if request.args.get('status') == 'rejeitado' }}>Rejeitado</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Técnico</label>
+                <select name="tecnico_id" class="form-select">
+                    <option value="">Todos</option>
+                    {% for t in tecnicos %}
+                        <option value="{{ t.id }}" {{ 'selected' if request.args.get('tecnico_id') == t.id|string }}>{{ t.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+                <a href="{{ url_for('chamados.listar') }}" class="btn btn-outline-secondary">Limpar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<div class="table-responsive">
+    <table class="table table-hover bg-white shadow-sm rounded">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Status</th>
+                <th>Setor</th>
+                {% if session.usuario_perfil != "morador" %}
+                    <th>Morador</th>
+                {% endif %}
+                {% if session.usuario_perfil != "tecnico" %}
+                    <th>Técnico</th>
+                {% endif %}
+                <th>Data</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in chamados %}
+            <tr>
+                <td>#{{ c.id }}</td>
+                <td>{{ c.titulo }}</td>
+                <td>
+                    <span class="badge 
+                        {% if c.status == 'pendente' %}bg-warning text-dark
+                        {% elif c.status == 'em_atendimento' %}bg-info text-dark
+                        {% elif c.status == 'concluido' %}bg-success
+                        {% elif c.status == 'rejeitado' %}bg-danger
+                        {% endif %}">
+                        {{ c.status|replace('_', ' ')|capitalize }}
+                    </span>
+                </td>
+                <td>{{ c.setor.nome if c.setor else '-' }}</td>
+                {% if session.usuario_perfil != "morador" %}
+                    <td>{{ c.morador.nome }} ({{ c.morador.unidade }})</td>
+                {% endif %}
+                {% if session.usuario_perfil != "tecnico" %}
+                    <td>{{ c.tecnico.nome if c.tecnico else 'Não atribuído' }}</td>
+                {% endif %}
+                <td>{{ c.criado_em.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>
+                    <a href="{{ url_for('chamados.detalhes', chamado_id=c.id) }}" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center py-4">Nenhum chamado encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

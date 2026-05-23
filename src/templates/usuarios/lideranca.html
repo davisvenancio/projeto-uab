@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Painel de Liderança - CondoFix{% endblock %}
+{% block content %}
+<h2 class="mb-4">Painel de Liderança</h2>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white shadow-sm h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">Tempo Médio de Resolução</h5>
+                <h2 class="display-4">{{ tempo_medio if tempo_medio else '--' }}</h2>
+                <p class="mb-0">Horas por chamado concluído</p>
+            </div>
+        </div>
+    </div>
+    <!-- KPIs can be added here -->
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-bold">Custo Total por Setor</div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Setor</th>
+                            <th class="text-end">Custo Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in custo_setor %}
+                        <tr>
+                            <td>{{ r.setor }}</td>
+                            <td class="text-end">R$ {{ "%.2f"|format(r.total_custo) }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="2" class="text-center">Nenhum dado disponível</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-bold">Recorrências por Unidade</div>
+            <div class="card-body">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Unidade / Bloco</th>
+                            <th class="text-end">Total Chamados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in recorrencias %}
+                        <tr>
+                            <td>{{ r.unidade }} / {{ r.bloco if r.bloco else '-' }}</td>
+                            <td class="text-end">{{ r.total_chamados }}</td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="2" class="text-center">Nenhum dado disponível</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-bold">Equipe Técnica</span>
+        <a href="{{ url_for('usuarios.cadastrar_tecnico') }}" class="btn btn-sm btn-primary">Adicionar Técnico</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th class="text-end">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tecnicos %}
+                <tr>
+                    <td>{{ t.nome }}</td>
+                    <td>{{ t.email }}</td>
+                    <td class="text-end">
+                        <form method="POST" action="{{ url_for('usuarios.excluir_tecnico', usuario_id=t.id) }}" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Deseja realmente remover este técnico?')">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

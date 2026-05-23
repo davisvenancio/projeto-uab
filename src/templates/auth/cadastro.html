@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Cadastro - CondoFix{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Cadastro de Morador</h3>
+                <form method="POST" action="{{ url_for('auth.cadastro') }}">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome Completo</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="senha" class="form-label">Senha (mín. 8 caracteres)</label>
+                        <input type="password" class="form-control" id="senha" name="senha" minlength="8" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="unidade" class="form-label">Unidade/Apartamento</label>
+                            <input type="text" class="form-control" id="unidade" name="unidade" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="bloco" class="form-label">Bloco</label>
+                            <input type="text" class="form-control" id="bloco" name="bloco">
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </div>
+                </form>
+                <div class="text-center mt-3">
+                    <p>Já tem uma conta? <a href="{{ url_for('auth.login') }}">Faça login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

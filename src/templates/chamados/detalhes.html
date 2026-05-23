@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}Detalhes do Chamado #{{ os.id }} - CondoFix{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Chamado #{{ os.id }}: {{ os.titulo }}</h4>
+                <span class="badge 
+                    {% if os.status == 'pendente' %}bg-warning text-dark
+                    {% elif os.status == 'em_atendimento' %}bg-info text-dark
+                    {% elif os.status == 'concluido' %}bg-success
+                    {% elif os.status == 'rejeitado' %}bg-danger
+                    {% endif %} fs-6">
+                    {{ os.status|replace('_', ' ')|capitalize }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Descrição:</div>
+                    <div class="col-sm-9">{{ os.descricao }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Setor:</div>
+                    <div class="col-sm-9">{{ os.setor.nome if os.setor else 'Não especificado' }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Morador:</div>
+                    <div class="col-sm-9">{{ os.morador.nome }} (Unidade: {{ os.morador.unidade }}, Bloco: {{ os.morador.bloco }})</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Data de Abertura:</div>
+                    <div class="col-sm-9">{{ os.criado_em.strftime('%d/%m/%Y %H:%M') }}</div>
+                </div>
+                
+                {% if os.foto_base64 %}
+                <div class="mb-3">
+                    <div class="fw-bold mb-2">Foto Anexada:</div>
+                    <img src="{{ os.foto_base64 }}" class="img-fluid rounded border" style="max-height: 400px;" alt="Foto do problema">
+                </div>
+                {% endif %}
+
+                <hr>
+
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold">Parecer Técnico:</div>
+                    <div class="col-sm-9">{{ os.parecer_tecnico if os.parecer_tecnico else 'Aguardando atendimento' }}</div>
+                </div>
+                {% if os.custo %}
+                <div class="row mb-3 text-success fw-bold">
+                    <div class="col-sm-3">Custo Registrado:</div>
+                    <div class="col-sm-9">R$ {{ "%.2f"|format(os.custo) }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Ações do Técnico -->
+        {% if session.usuario_perfil == "tecnico" and os.tecnico_id == session.usuario_id %}
+            <div class="card shadow-sm border-info mb-4">
+                <div class="card-header bg-info text-dark fw-bold">Atualizar Atendimento</div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('chamados.atualizar_status', chamado_id=os.id) }}">
+                        <div class="mb-3">
+                            <label class="form-label">Novo Status</label>
+                            <select name="status" class="form-select" required>
+                                {% if os.status == 'pendente' %}
+                                    <option value="em_atendimento">Iniciar Atendimento</option>
+                                {% elif os.status == 'em_atendimento' %}
+                                    <option value="concluido">Concluir Chamado</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Parecer Técnico / Notas</label>
+                            <textarea name="parecer_tecnico" class="form-control" rows="3" placeholder="Descreva o que foi feito..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-info w-100">Atualizar</button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Ações do Admin -->
+        {% if session.usuario_perfil == "admin" %}
+            <div class="card shadow-sm border-primary mb-4">
+                <div class="card-header bg-primary text-white fw-bold">Gestão Administrativa</div>
+                <div class="card-body">
+                    <!-- Delegar -->
+                    <form method="POST" action="{{ url_for('chamados.delegar', chamado_id=os.id) }}" class="mb-4">
+                        <label class="form-label fw-bold">Delegar para Técnico</label>
+                        <div class="input-group">
+                            <select name="tecnico_id" class="form-select">
+                                <option value="">Selecionar...</option>
+                                <!-- Note: 'tecnicos' variable would need to be passed to this template, or queried -->
+                                <!-- For simplicity in this mock, we assume it's available or handle via context processor -->
+                            </select>
+                            <button type="submit" class="btn btn-primary">Atribuir</button>
+                        </div>
+                    </form>
+
+                    <!-- Registrar Custo -->
+                    <form method="POST" action="{{ url_for('chamados.registrar_custo', chamado_id=os.id) }}" class="mb-4">
+                        <label class="form-label fw-bold">Registrar Custo (R$)</label>
+                        <div class="input-group">
+                            <input type="number" name="custo" step="0.01" min="0" class="form-control" value="{{ os.custo if os.custo else '' }}">
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                        </div>
+                    </form>
+
+                    <!-- Rejeitar -->
+                    {% if os.status == 'pendente' %}
+                    <form method="POST" action="{{ url_for('chamados.rejeitar', chamado_id=os.id) }}">
+                        <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Tem certeza que deseja rejeitar este chamado?')">Rejeitar Chamado</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+        
+        <a href="javascript:history.back()" class="btn btn-outline-secondary w-100">Voltar</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Cadastrar Técnico - CondoFix{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Cadastrar Novo Técnico</h3>
+                <form method="POST" action="{{ url_for('usuarios.cadastrar_tecnico') }}">
+                    <div class="mb-3">
+                        <label for="nome" class="form-label">Nome Completo</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="senha" class="form-label">Senha Inicial (mín. 8 caracteres)</label>
+                        <input type="password" class="form-control" id="senha" name="senha" minlength="8" required>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('usuarios.lideranca') }}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Cadastrar Técnico</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

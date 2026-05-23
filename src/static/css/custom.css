@@ -1,0 +1,17 @@
+/* Custom Styles for CondoFix */
+.navbar-brand {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.badge {
+    padding: 0.5em 0.8em;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}

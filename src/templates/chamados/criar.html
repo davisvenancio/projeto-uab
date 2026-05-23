@@ -3,37 +3,69 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="card-title mb-4">Abrir Novo Chamado</h3>
-                <form method="POST" action="{{ url_for('chamados.criar') }}" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="titulo" class="form-label">Título do Problema</label>
-                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Ex: Vazamento no corredor" required>
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h3 class="card-title mb-0 text-primary fw-bold">
+                    <i class="bi bi-plus-circle me-2"></i>Abrir Novo Chamado
+                </h3>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('chamados.criar') }}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    <div class="mb-4">
+                        <label for="titulo" class="form-label fw-semibold small">Título do Problema</label>
+                        <div class="input-group has-validation">
+                            <span class="input-group-text"><i class="bi bi-type"></i></span>
+                            <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Ex: Vazamento no corredor" required minlength="5">
+                            <div class="invalid-feedback">Por favor, informe um título descritivo (mínimo 5 caracteres).</div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="setor_id" class="form-label">Setor / Categoria</label>
-                        <select class="form-select" id="setor_id" name="setor_id">
-                            <option value="">Selecione um setor (opcional)</option>
-                            {% for setor in setores %}
-                                <option value="{{ setor.id }}">{{ setor.nome }}</option>
-                            {% endfor %}
-                        </select>
+                    
+                    <div class="mb-4">
+                        <label for="setor_id" class="form-label fw-semibold small">Setor / Categoria</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                            <select class="form-select" id="setor_id" name="setor_id">
+                                <option value="">Selecione um setor (opcional)</option>
+                                {% for setor in setores %}
+                                    <option value="{{ setor.id }}">{{ setor.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-text">Classificar o setor ajuda a agilizar o atendimento.</div>
                     </div>
-                    <div class="mb-3">
-                        <label for="descricao" class="form-label">Descrição Detalhada</label>
-                        <textarea class="form-control" id="descricao" name="descricao" rows="4" required></textarea>
+
+                    <div class="mb-4">
+                        <label for="descricao" class="form-label fw-semibold small">Descrição Detalhada</label>
+                        <textarea class="form-control" id="descricao" name="descricao" rows="5" placeholder="Descreva o problema com o máximo de detalhes possível..." required minlength="10"></textarea>
+                        <div class="invalid-feedback">Por favor, descreva o problema detalhadamente (mínimo 10 caracteres).</div>
                     </div>
-                    <div class="mb-3">
-                        <label for="foto" class="form-label">Foto do Problema (opcional, máx 2MB)</label>
-                        <input class="form-control" type="file" id="foto" name="foto" accept="image/*">
+
+                    <div class="mb-4">
+                        <label for="foto" class="form-label fw-semibold small">Foto de Evidência (opcional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-camera"></i></span>
+                            <input class="form-control" type="file" id="foto" name="foto" accept="image/*">
+                        </div>
+                        <div class="form-text small text-muted">Formatos aceitos: JPG, PNG, WEBP. Tamanho máximo: 2MB.</div>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('chamados.meus_pedidos') }}" class="btn btn-secondary">Cancelar</a>
-                        <button type="submit" class="btn btn-primary">Abrir Chamado</button>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('chamados.meus_pedidos') }}" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 fw-bold">
+                            <i class="bi bi-check-circle me-2"></i>Abrir Chamado
+                        </button>
                     </div>
                 </form>
             </div>
+        </div>
+        
+        <div class="mt-4 p-3 bg-info bg-opacity-10 border border-info rounded">
+            <h6 class="text-info fw-bold mb-2"><i class="bi bi-info-circle me-2"></i>Dica</h6>
+            <p class="mb-0 small text-dark">Quanto mais detalhada for a descrição e com fotos claras, mais rápido nossa equipe técnica poderá resolver o problema.</p>
         </div>
     </div>
 </div>

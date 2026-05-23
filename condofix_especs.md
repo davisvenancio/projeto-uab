@@ -991,6 +991,46 @@ Flask-Bcrypt==1.0.1
 python-dotenv==1.0.1
 ```
 
+## Padrões de Frontend e UI/UX
+
+### 1. Design System e Identidade Visual
+- **Cores Primárias:**
+  - `CondoFix Blue`: `#0d6efd` (Bootstrap Primary) - Ações principais e navegação.
+  - `Success Green`: `#198754` (Bootstrap Success) - Conclusão e sucesso.
+  - `Danger Red`: `#dc3545` (Bootstrap Danger) - Erros e ações críticas (rejeitar/excluir).
+  - `Warning Yellow`: `#ffc107` (Bootstrap Warning) - Chamados pendentes.
+  - `Info Cyan`: `#0dcaf0` (Bootstrap Info) - Chamados em atendimento.
+- **Tipografia:**
+  - Fonte sans-serif padrão do sistema (Inter/Segoe UI).
+  - Títulos (`h1`, `h2`, `h3`) com peso `fw-bold`.
+- **Componentes:**
+  - **Cards:** Uso extensivo de `card shadow-sm` para agrupar informações.
+  - **Botões:** Tamanho padrão para formulários, `btn-sm` para tabelas. Uso de ícones para ações comuns.
+  - **Badges:** Arredondados para status, com cores semânticas claras.
+
+### 2. Responsividade e Layout
+- **Grid:** Utilização do grid system do Bootstrap 5 (`container`, `row`, `col`).
+- **Mobile-First:** Priorizar a visualização em dispositivos móveis, garantindo que botões e inputs tenham área de clique adequada (mínimo 44px).
+- **Tabelas:** Envolver todas as tabelas em `.table-responsive` para evitar quebra de layout em telas pequenas.
+- **Navbar:** Colapsável em dispositivos móveis com menu "hambúrguer".
+
+### 3. Acessibilidade (a11y)
+- **ARIA:** Uso de atributos `aria-label`, `aria-describedby` e `role` em componentes interativos.
+- **Contraste:** Garantir contraste adequado entre texto e fundo (mínimo WCAG AA).
+- **Semântica:** Uso correto de tags HTML5 (`<main>`, `<nav>`, `<header>`, `<footer>`, `<section>`).
+- **Foco:** Indicadores visuais claros para navegação via teclado.
+
+### 4. Estados de Tela e Feedbacks
+- **Loading States:** Exibir spinners (`.spinner-border`) ou skeletons durante o processamento de formulários ou carregamento de dados pesados.
+- **Empty States:** Quando uma lista estiver vazia (ex: nenhum chamado), exibir uma mensagem amigável com um ícone ilustrativo e um botão de ação (ex: "Abrir primeiro chamado").
+- **Mensagens Flash:** Utilizar alertas Bootstrap com botão de fechar. Diferenciar por cores (sucesso, erro, aviso).
+- **Feedbacks de Validação:** Marcar campos inválidos com `.is-invalid` e exibir a mensagem de erro logo abaixo do input (`.invalid-feedback`).
+
+### 5. Fluxos de Navegação e Interação
+- **Breadcrumbs:** Implementar trilhas de navegação em páginas de detalhes para facilitar o retorno.
+- **Confirmação:** Exibir modais ou diálogos de confirmação para ações destrutivas (excluir técnico, rejeitar chamado).
+- **Hover Effects:** Transições suaves em links, botões e linhas de tabela para melhorar a percepção de interatividade.
+
 ---
 
 ## `.gitignore`

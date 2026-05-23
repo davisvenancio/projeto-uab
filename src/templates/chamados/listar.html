@@ -41,10 +41,10 @@
 {% endif %}
 
 <div class="table-responsive">
-    <table class="table table-hover bg-white shadow-sm rounded">
-        <thead class="table-light">
+    <table class="table table-hover bg-white shadow-sm rounded border-0">
+        <thead class="table-light border-bottom">
             <tr>
-                <th>ID</th>
+                <th class="ps-3">ID</th>
                 <th>Título</th>
                 <th>Status</th>
                 <th>Setor</th>
@@ -55,13 +55,13 @@
                     <th>Técnico</th>
                 {% endif %}
                 <th>Data</th>
-                <th>Ações</th>
+                <th class="pe-3">Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for c in chamados %}
-            <tr>
-                <td>#{{ c.id }}</td>
+            <tr class="align-middle">
+                <td class="ps-3 fw-bold">#{{ c.id }}</td>
                 <td>{{ c.titulo }}</td>
                 <td>
                     <span class="badge 
@@ -70,24 +70,54 @@
                         {% elif c.status == 'concluido' %}bg-success
                         {% elif c.status == 'rejeitado' %}bg-danger
                         {% endif %}">
+                        <i class="bi 
+                            {% if c.status == 'pendente' %}bi-clock
+                            {% elif c.status == 'em_atendimento' %}bi-gear-fill
+                            {% elif c.status == 'concluido' %}bi-check-circle-fill
+                            {% elif c.status == 'rejeitado' %}bi-x-circle-fill
+                            {% endif %} me-1"></i>
                         {{ c.status|replace('_', ' ')|capitalize }}
                     </span>
                 </td>
                 <td>{{ c.setor.nome if c.setor else '-' }}</td>
                 {% if session.usuario_perfil != "morador" %}
-                    <td>{{ c.morador.nome }} ({{ c.morador.unidade }})</td>
+                    <td>
+                        <div class="d-flex flex-column">
+                            <span>{{ c.morador.nome }}</span>
+                            <small class="text-muted">Unid: {{ c.morador.unidade }}</small>
+                        </div>
+                    </td>
                 {% endif %}
                 {% if session.usuario_perfil != "tecnico" %}
-                    <td>{{ c.tecnico.nome if c.tecnico else 'Não atribuído' }}</td>
+                    <td>
+                        {% if c.tecnico %}
+                            <span class="text-dark"><i class="bi bi-person-badge me-1"></i>{{ c.tecnico.nome }}</span>
+                        {% else %}
+                            <span class="text-muted small italic">Não atribuído</span>
+                        {% endif %}
+                    </td>
                 {% endif %}
                 <td>{{ c.criado_em.strftime('%d/%m/%Y %H:%M') }}</td>
-                <td>
-                    <a href="{{ url_for('chamados.detalhes', chamado_id=c.id) }}" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
+                <td class="pe-3">
+                    <a href="{{ url_for('chamados.detalhes', chamado_id=c.id) }}" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center">
+                        <i class="bi bi-eye me-1"></i> Ver Detalhes
+                    </a>
                 </td>
             </tr>
             {% else %}
             <tr>
-                <td colspan="8" class="text-center py-4">Nenhum chamado encontrado.</td>
+                <td colspan="8" class="border-0">
+                    <div class="empty-state">
+                        <i class="bi bi-clipboard-x empty-state-icon"></i>
+                        <h4 class="text-muted">Nenhum chamado encontrado</h4>
+                        <p class="text-secondary">Parece que ainda não há ordens de serviço nesta categoria.</p>
+                        {% if session.usuario_perfil == "morador" %}
+                            <a href="{{ url_for('chamados.criar') }}" class="btn btn-primary mt-3">
+                                <i class="bi bi-plus-circle me-1"></i> Abrir Primeiro Chamado
+                            </a>
+                        {% endif %}
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

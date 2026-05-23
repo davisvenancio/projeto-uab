@@ -62,17 +62,27 @@ class Setor(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome = db.Column(db.String(50), nullable=False, unique=True)
 
-def seed_admin():
-    from .models import Usuario, PerfilUsuario
+def seed_db():
+    # Seed Admin
     if not db.session.query(Usuario).filter_by(email="admin@condofix.local").first():
         admin = Usuario(
             nome       = "Administrador",
             email      = "admin@condofix.local",
-            perfil     = PerfilUsuario.ADMIN.value if hasattr(PerfilUsuario.ADMIN, 'value') else "admin"
+            perfil     = "admin"
         )
         admin.definir_senha("admin@1234")
         db.session.add(admin)
-        try:
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
+    
+    # Seed Setores
+    setores_padrao = ["Elétrica", "Hidráulica", "Limpeza", "Pintura", "Geral", "Segurança", "Elevadores"]
+    for nome in setores_padrao:
+        if not db.session.query(Setor).filter_by(nome=nome).first():
+            db.session.add(Setor(nome=nome))
+            
+    try:
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+
+# Manter alias para compatibilidade com código anterior
+seed_admin = seed_db

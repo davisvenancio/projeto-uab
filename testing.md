@@ -33,6 +33,15 @@ Este documento detalha a estratégia de testes automatizados de alto nível impl
 ### 2.4. Lógica de Negócio (KPIs)
 - **Cálculo de Performance:** Validação da fórmula de tempo médio de resolução, garantindo o isolamento de chamados não concluídos.
 
+### 2.5. Testes de Frontend e Interface (UI/UX)
+- **Responsividade:** Validar o layout em resoluções Mobile (375px), Tablet (768px) e Desktop (1200px+). Garantir que o menu colapse e tabelas fiquem responsivas.
+- **Acessibilidade:** Validar presença de atributos ARIA, contraste de cores e navegação via teclado.
+- **Renderização Condicional:** Verificar se elementos específicos de perfis (ex: botão "Delegar" para Admin) aparecem apenas para os usuários autorizados.
+- **Validação de Formulários:** Testar feedbacks visuais de erro (`.is-invalid`) e mensagens de validação em tempo real.
+- **Estados de Carregamento e Erro:** Validar exibição de spinners durante submissão e tratamento de estados vazios (Empty States).
+- **Integração Frontend/Backend:** Testar o fluxo completo de submissão de formulários via UI, incluindo uploads de imagem.
+- **Testes E2E (End-to-End):** Fluxo crítico: Morador abre chamado -> Admin delega -> Técnico conclui -> Sistema calcula KPI.
+
 ## 3. Estrutura de Arquivos
 - `tests/conftest.py`: Fixtures globais (app, client, db initialization).
 - `tests/test_auth.py`: Autenticação e Autorização.

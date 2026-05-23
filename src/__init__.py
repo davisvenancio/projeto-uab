@@ -17,8 +17,12 @@ def create_app():
     executor.init_app(app)
 
     with app.app_context():
+        from . import models
+        app.logger.info("Criando tabelas no banco de dados...")
         db.create_all()
+        app.logger.info("Tabelas criadas com sucesso.")
         seed_admin()
+        app.logger.info("Seed do administrador executado.")
 
     # Import and register blueprints
     from .views.auth_view import auth_bp

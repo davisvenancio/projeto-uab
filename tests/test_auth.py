@@ -1,4 +1,4 @@
-from src.models import Usuario
+from src.models import Usuario, db
 
 def test_login_sucesso(client):
     # O seed_data já cria o admin
@@ -19,11 +19,19 @@ def test_login_falha(client):
     assert response.status_code == 401
     assert "Credenciais inválidas.".encode("utf-8") in response.data
 
-def test_acesso_negado_morador_em_admin(client):
+def test_acesso_negado_morador_em_admin(client, app):
+    # Criar morador para o teste
+    with app.app_context():
+        if not Usuario.query.filter_by(email="morador@test.com").first():
+            morador = Usuario(nome="Morador Teste", email="morador@test.com", perfil="morador")
+            morador.definir_senha("password123")
+            db.session.add(morador)
+            db.session.commit()
+
     # Login como morador
     client.post("/auth/login", data={
-        "email": "morador@condofix.local",
-        "senha": "morador@1234"
+        "email": "morador@test.com",
+        "senha": "password123"
     })
     
     # Tenta acessar dashboard de admin

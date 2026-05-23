@@ -1,6 +1,6 @@
 import pytest
 from src import create_app
-from src.models import db, seed_data
+from src.models import db, seed_admin
 
 @pytest.fixture
 def app():
@@ -14,7 +14,7 @@ def app():
 
     with app.app_context():
         db.create_all()
-        seed_data()
+        seed_admin()
         yield app
         db.drop_all()
 

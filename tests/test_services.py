@@ -4,7 +4,10 @@ from datetime import datetime, timedelta
 
 def test_calcular_tempo_medio(app):
     with app.app_context():
-        morador = Usuario.query.filter_by(perfil="morador").first()
+        morador = Usuario(nome="M", email="m@test.com", perfil="morador")
+        morador.definir_senha("p")
+        db.session.add(morador)
+        db.session.commit()
         
         # OS concluída em 2 horas
         os1 = OrdemServico(

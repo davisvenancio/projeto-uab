@@ -6,7 +6,7 @@ from ..services.report_service import calcular_tempo_medio_resolucao, calcular_c
 usuarios_bp = Blueprint("usuarios", __name__)
 
 @usuarios_bp.route("/lideranca")
-@login_required(perfis_permitidos=["admin"])
+@login_required(perfis=["admin"])
 def lideranca():
     tempo_medio = calcular_tempo_medio_resolucao()
     custo_setor = calcular_custo_por_setor()
@@ -20,7 +20,7 @@ def lideranca():
                            tecnicos=tecnicos)
 
 @usuarios_bp.route("/cadastrar-tecnico", methods=["GET", "POST"])
-@login_required(perfis_permitidos=["admin"])
+@login_required(perfis=["admin"])
 def cadastrar_tecnico():
     if request.method == "POST":
         nome = request.form.get("nome", "").strip()
@@ -54,7 +54,7 @@ def cadastrar_tecnico():
     return render_template("usuarios/cadastrar_tecnico.html")
 
 @usuarios_bp.route("/<int:usuario_id>/excluir-tecnico", methods=["POST"])
-@login_required(perfis_permitidos=["admin"])
+@login_required(perfis=["admin"])
 def excluir_tecnico(usuario_id):
     tecnico = Usuario.query.filter_by(id=usuario_id, perfil="tecnico").first_or_404()
 

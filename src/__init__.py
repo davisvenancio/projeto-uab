@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import Config
-from .models import db, bcrypt, seed_data
+from .models import db, bcrypt, seed_admin
 # Blueprints will be imported here later
 
 def create_app():
@@ -12,7 +12,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        seed_data()
+        seed_admin()
 
     # Import and register blueprints
     from .views.auth_view import auth_bp

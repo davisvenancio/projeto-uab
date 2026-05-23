@@ -8,7 +8,7 @@ from decimal import Decimal
 chamados_bp = Blueprint("chamados", __name__)
 
 @chamados_bp.route("/criar", methods=["GET", "POST"])
-@login_required(perfis_permitidos=["morador"])
+@login_required(perfis=["morador"])
 def criar():
     if request.method == "POST":
         titulo = request.form.get("titulo", "").strip()
@@ -50,19 +50,19 @@ def criar():
     return render_template("chamados/criar.html", setores=setores)
 
 @chamados_bp.route("/meus-pedidos")
-@login_required(perfis_permitidos=["morador"])
+@login_required(perfis=["morador"])
 def meus_pedidos():
     chamados = OrdemServico.query.filter_by(morador_id=g.usuario_atual.id).order_by(OrdemServico.criado_em.desc()).all()
     return render_template("chamados/listar.html", chamados=chamados, titulo="Meus Pedidos")
 
 @chamados_bp.route("/fila")
-@login_required(perfis_permitidos=["tecnico"])
+@login_required(perfis=["tecnico"])
 def fila():
     chamados = OrdemServico.query.filter_by(tecnico_id=g.usuario_atual.id).filter(OrdemServico.status.in_(["pendente", "em_atendimento"])).order_by(OrdemServico.criado_em.asc()).all()
     return render_template("chamados/listar.html", chamados=chamados, titulo="Minha Fila")
 
 @chamados_bp.route("/listar")
-@login_required(perfis_permitidos=["admin"])
+@login_required(perfis=["admin"])
 def listar():
     status_filtro = request.args.get("status")
     tecnico_filtro = request.args.get("tecnico_id")
@@ -79,7 +79,7 @@ def listar():
     return render_template("chamados/listar.html", chamados=chamados, tecnicos=tecnicos, titulo="Todos os Chamados")
 
 @chamados_bp.route("/<int:chamado_id>/detalhes")
-@login_required(perfis_permitidos=["morador", "tecnico", "admin"])
+@login_required(perfis=["morador", "tecnico", "admin"])
 def detalhes(chamado_id):
     os = OrdemServico.query.get_or_404(chamado_id)
 
@@ -95,7 +95,7 @@ def detalhes(chamado_id):
     return render_template("chamados/detalhes.html", os=os, tecnicos=tecnicos)
 
 @chamados_bp.route("/<int:chamado_id>/atualizar-status", methods=["POST"])
-@login_required(perfis_permitidos=["tecnico"])
+@login_required(perfis=["tecnico"])
 def atualizar_status(chamado_id):
     os = OrdemServico.query.get_or_404(chamado_id)
 
@@ -133,7 +133,7 @@ def atualizar_status(chamado_id):
     return redirect(url_for("chamados.detalhes", chamado_id=chamado_id))
 
 @chamados_bp.route("/<int:chamado_id>/delegar", methods=["POST"])
-@login_required(perfis_permitidos=["admin"])
+@login_required(perfis=["admin"])
 def delegar(chamado_id):
     os = OrdemServico.query.get_or_404(chamado_id)
     tecnico_id_raw = request.form.get("tecnico_id")
@@ -162,7 +162,7 @@ def delegar(chamado_id):
     return redirect(url_for("chamados.detalhes", chamado_id=chamado_id))
 
 @chamados_bp.route("/<int:chamado_id>/rejeitar", methods=["POST"])
-@login_required(perfis_permitidos=["admin"])
+@login_required(perfis=["admin"])
 def rejeitar(chamado_id):
     os = OrdemServico.query.get_or_404(chamado_id)
 
@@ -182,7 +182,7 @@ def rejeitar(chamado_id):
     return redirect(url_for("chamados.listar"))
 
 @chamados_bp.route("/<int:chamado_id>/custo", methods=["POST"])
-@login_required(perfis_permitidos=["admin"])
+@login_required(perfis=["admin"])
 def registrar_custo(chamado_id):
     os = OrdemServico.query.get_or_404(chamado_id)
     custo_raw = request.form.get("custo", "").strip()

@@ -180,7 +180,7 @@ PSEUDOCÓDIGO seed_admin():
 ```
 PSEUDOCÓDIGO auth_service.py:
 
-  FUNÇÃO login_required(perfis_permitidos=[]):
+  FUNÇÃO login_required(perfis=[]):
     // Decorador de ordem superior
     RETORNAR decorador que:
       VERIFICA SE "usuario_id" EXISTE em flask.session
@@ -194,7 +194,7 @@ PSEUDOCÓDIGO auth_service.py:
         session.clear()
         REDIRECIONAR para "/auth/login"
 
-      SE perfis_permitidos NÃO ESTÁ VAZIO E usuario.perfil NÃO ESTÁ EM perfis_permitidos:
+      SE perfis NÃO ESTÁ VAZIO E usuario.perfil NÃO ESTÁ EM perfis:
         flash("Acesso não autorizado.")
         REDIRECIONAR para "/auth/login"
 

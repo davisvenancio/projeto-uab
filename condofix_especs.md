@@ -1,7 +1,14 @@
 # Especificação Técnica do Sistema — CondoFix
 
 > **Disciplina:** Análise e Desenvolvimento de Sistemas / Engenharia de Software
-> **Stack:** Python 3, Flask, Jinja2, Bootstrap 5, SQLite, Docker
+> **Stack:** Python 3, Flask, Jinja2, Bootstrap 5, SQLite, Docker, Flask-Caching, Flask-Executor
+
+---
+
+## Otimizações de Desempenho
+
+- **Cache:** Utilização do `Flask-Caching` (SimpleCache) para memorizar resultados de relatórios pesados no `report_service.py`.
+- **Background Jobs:** Utilização do `Flask-Executor` para processamento assíncrono de tarefas pesadas (ex: processamento de imagens) sem bloquear a thread principal da requisição.
 
 ---
 

@@ -1,11 +1,30 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, g
+from flask import Blueprint, render_template, request, flash, redirect, url_for, g, current_app
 from ..models import db, OrdemServico, Setor, Usuario
 from ..services.auth_service import login_required
 from ..services.image_service import processar_imagem
 from datetime import datetime
 from decimal import Decimal
+from .. import executor
 
 chamados_bp = Blueprint("chamados", __name__)
+
+def background_processar_imagem(os_id, arquivo_data, filename):
+    with current_app.app_context():
+        try:
+            # Mocking FileStorage since we can't easily pass it
+            class MockFile:
+                def __init__(self, content, name):
+                    self.content = content
+                    self.filename = name
+                def read(self): return self.content
+            
+            foto_base64 = processar_imagem(MockFile(arquivo_data, filename))
+            os = db.session.get(OrdemServico, os_id)
+            if os:
+                os.foto_base64 = foto_base64
+                db.session.commit()
+        except Exception as e:
+            print(f"Erro no processamento em background: {e}")
 
 @chamados_bp.route("/criar", methods=["GET", "POST"])
 @login_required(perfis=["morador"])
@@ -20,26 +39,24 @@ def criar():
             flash("Título e descrição são obrigatórios.")
             return redirect(url_for("chamados.criar"))
 
-        foto_base64 = None
-        if arquivo and arquivo.filename:
-            try:
-                foto_base64 = processar_imagem(arquivo)
-            except ValueError as e:
-                flash(str(e))
-                return redirect(url_for("chamados.criar"))
-
         try:
             nova_os = OrdemServico(
                 titulo=titulo,
                 descricao=descricao,
                 status="pendente",
-                foto_base64=foto_base64,
                 morador_id=g.usuario_atual.id,
                 setor_id=int(setor_id) if setor_id else None
             )
             db.session.add(nova_os)
             db.session.commit()
-            flash("Chamado aberto com sucesso.")
+            
+            if arquivo and arquivo.filename:
+                # Processar em background
+                executor.submit(background_processar_imagem, nova_os.id, arquivo.read(), arquivo.filename)
+                flash("Chamado aberto. A imagem está sendo processada.")
+            else:
+                flash("Chamado aberto com sucesso.")
+            
             return redirect(url_for("chamados.meus_pedidos"))
         except Exception:
             db.session.rollback()

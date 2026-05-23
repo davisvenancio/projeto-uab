@@ -63,12 +63,16 @@ class Setor(db.Model):
     nome = db.Column(db.String(50), nullable=False, unique=True)
 
 def seed_admin():
-    if not Usuario.query.filter_by(perfil="admin").first():
+    from .models import Usuario, PerfilUsuario
+    if not db.session.query(Usuario).filter_by(email="admin@condofix.local").first():
         admin = Usuario(
             nome       = "Administrador",
             email      = "admin@condofix.local",
-            perfil     = PerfilUsuario.ADMIN
+            perfil     = PerfilUsuario.ADMIN.value if hasattr(PerfilUsuario.ADMIN, 'value') else "admin"
         )
         admin.definir_senha("admin@1234")
         db.session.add(admin)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()

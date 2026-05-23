@@ -27,7 +27,7 @@ def test_criar_chamado_fluxo_feliz(client, app):
     
     response = client.post("/chamados/criar", data=data, content_type="multipart/form-data", follow_redirects=True)
     assert response.status_code == 200
-    assert "Chamado aberto com sucesso.".encode("utf-8") in response.data
+    assert "imagem está sendo processada".encode("utf-8") in response.data.lower()
     
     with client.application.app_context():
         chamado = OrdemServico.query.filter_by(titulo="Vazamento Teste").first()

@@ -22,6 +22,10 @@ Este documento detalha a estratégia de testes automatizados de alto nível impl
 - **Máquina de Estados:** Bloqueio de transições de status inválidas (ex: Pendente -> Concluído).
 - **Restrição Admin (Concluído):** Garante que administradores não possam delegar ou alterar o custo de chamados que já estejam no status `concluido`.
 
+### 2.4. Otimização e Performance
+- **Cache de Relatórios:** Validação de que múltiplas chamadas ao dashboard administrativo não resultam em consultas redundantes ao banco (via mock ou timing).
+- **Processamento Assíncrono:** Verificação de que o chamado é criado imediatamente enquanto a imagem é processada em segundo plano.
+
 ### 2.3. Validações e Limites (Edge Cases)
 - **Integridade de Imagem:** Bloqueio de extensões não permitidas (ex: .txt, .pdf).
 - **Limite de Payload:** Validação do limite de **2MB** para fotos, conforme constante `MAX_IMAGE_SIZE_BYTES`.

@@ -1,7 +1,11 @@
 from flask import Flask
 from .config import Config
 from .models import db, bcrypt, seed_admin
-# Blueprints will be imported here later
+from flask_caching import Cache
+from flask_executor import Executor
+
+cache = Cache()
+executor = Executor()
 
 def create_app():
     app = Flask(__name__)
@@ -9,6 +13,8 @@ def create_app():
 
     db.init_app(app)
     bcrypt.init_app(app)
+    cache.init_app(app, config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 300})
+    executor.init_app(app)
 
     with app.app_context():
         db.create_all()

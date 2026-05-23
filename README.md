@@ -27,6 +27,10 @@ Acesse em: `http://localhost:5000`
 - **E-mail:** `admin@condofix.local`
 - **Senha:** `admin@1234`
 
+## Regras de Negócio (Destaques)
+- **Restrição de Atualização:** Administradores não podem delegar ou alterar o custo de chamados que já estejam no status **Concluído**.
+- **Máquina de Estados:** Transições de status seguem um fluxo rigoroso (Pendente -> Em Atendimento -> Concluído).
+
 ## Testes
 ```bash
 docker exec -it condofix-app pytest -v

@@ -691,7 +691,12 @@ PSEUDOCÓDIGO POST /chamados/<chamado_id>/custo:
 
   @login_required(perfis=["admin"])
 
-  os    = OrdemServico.query.get_or_404(chamado_id)
+  os = OrdemServico.query.get_or_404(chamado_id)
+
+  SE os.status == "concluido":
+    flash("Não é possível alterar o custo de um chamado já concluído.")
+    REDIRECIONAR para "/chamados/<chamado_id>/detalhes"
+
   custo = request.form.get("custo", "").strip()
 
   TENTAR:

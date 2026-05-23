@@ -20,6 +20,7 @@ Este documento detalha a estratégia de testes automatizados de alto nível impl
 - **Criação de Chamado:** Fluxo completo incluindo upload de arquivo (`multipart/form-data`) e validação de persistência.
 - **Delegação Administrativa:** Validação da atribuição de técnicos e mudança automática de status para `em_atendimento`.
 - **Máquina de Estados:** Bloqueio de transições de status inválidas (ex: Pendente -> Concluído).
+- **Restrição Admin (Concluído):** Garante que administradores não possam delegar ou alterar o custo de chamados que já estejam no status `concluido`.
 
 ### 2.3. Validações e Limites (Edge Cases)
 - **Integridade de Imagem:** Bloqueio de extensões não permitidas (ex: .txt, .pdf).

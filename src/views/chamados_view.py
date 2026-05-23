@@ -136,6 +136,11 @@ def atualizar_status(chamado_id):
 @login_required(perfis=["admin"])
 def delegar(chamado_id):
     os = OrdemServico.query.get_or_404(chamado_id)
+    
+    if os.status == "concluido":
+        flash("Não é possível delegar um chamado já concluído.")
+        return redirect(url_for("chamados.detalhes", chamado_id=chamado_id))
+
     tecnico_id_raw = request.form.get("tecnico_id")
     
     if not tecnico_id_raw:
@@ -185,6 +190,11 @@ def rejeitar(chamado_id):
 @login_required(perfis=["admin"])
 def registrar_custo(chamado_id):
     os = OrdemServico.query.get_or_404(chamado_id)
+
+    if os.status == "concluido":
+        flash("Não é possível alterar o custo de um chamado já concluído.")
+        return redirect(url_for("chamados.detalhes", chamado_id=chamado_id))
+
     custo_raw = request.form.get("custo", "").strip()
 
     try:

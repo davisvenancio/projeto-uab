@@ -65,9 +65,9 @@ class Setor(db.Model):
 def seed_admin():
     if not Usuario.query.filter_by(perfil="admin").first():
         admin = Usuario(
-            nome="Administrador",
-            email="admin@condofix.local",
-            perfil="admin"
+            nome       = "Administrador",
+            email      = "admin@condofix.local",
+            perfil     = PerfilUsuario.ADMIN
         )
         admin.definir_senha("admin@1234")
         db.session.add(admin)

@@ -45,5 +45,5 @@ docker exec -it condofix-app pytest -v
 
 ---
 **Última Atualização:** 23/05/2026
-**Responsável:** Senior Test Engineer
+**Responsável:** David Venancio da Silva Sousa
 **Status:** 100% PASS

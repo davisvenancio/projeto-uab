@@ -61,7 +61,6 @@ class Setor(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nome = db.Column(db.String(50), nullable=False, unique=True)
-
 def seed_db():
     # Seed Admin
     if not db.session.query(Usuario).filter_by(email="admin@condofix.local").first():
@@ -72,8 +71,21 @@ def seed_db():
         )
         admin.definir_senha("admin@1234")
         db.session.add(admin)
-    
+
+    # Seed Morador
+    if not db.session.query(Usuario).filter_by(email="morador@condofix.local").first():
+        morador = Usuario(
+            nome       = "Morador Teste",
+            email      = "morador@condofix.local",
+            perfil     = "morador",
+            unidade    = "101",
+            bloco      = "A"
+        )
+        morador.definir_senha("morador@1234")
+        db.session.add(morador)
+
     # Seed Setores
+...
     setores_padrao = ["Elétrica", "Hidráulica", "Limpeza", "Pintura", "Geral", "Segurança", "Elevadores"]
     for nome in setores_padrao:
         if not db.session.query(Setor).filter_by(nome=nome).first():

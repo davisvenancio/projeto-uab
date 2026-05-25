@@ -38,10 +38,12 @@ def test_detalhes_chamado_frontend_elements(client, app):
     with app.app_context():
         morador = Usuario(nome="Morador Teste", email="morador_fe@test.com", perfil="morador")
         morador.definir_senha("pass")
-        setor = Setor(nome="Elétrica")
-        db.session.add_all([morador, setor])
+        setor = Setor.query.filter_by(nome="Elétrica").first()
+        if not setor:
+            setor = Setor(nome="Elétrica")
+            db.session.add(setor)
+        db.session.add(morador)
         db.session.commit()
-        
         os = OrdemServico(
             titulo="Curto Circuito", 
             descricao="Fumaça na tomada", 

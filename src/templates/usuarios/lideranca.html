@@ -154,6 +154,8 @@
                         </td>
                         <td class="text-end pe-3">
                             <form method="POST" action="{{ url_for('usuarios.excluir_tecnico', usuario_id=t.id) }}" class="d-inline">
+                               <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
                                 <button type="submit" class="btn btn-sm btn-outline-danger px-3" data-confirm="Deseja realmente remover o acesso deste técnico? Esta ação só é permitida se ele não possuir chamados ativos.">
                                     <i class="bi bi-trash3 me-1"></i>Excluir
                                 </button>

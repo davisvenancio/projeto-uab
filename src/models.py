@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from datetime import datetime
 import enum
+import os
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -63,29 +64,34 @@ class Setor(db.Model):
     nome = db.Column(db.String(50), nullable=False, unique=True)
 def seed_db():
     # Seed Admin
-    if not db.session.query(Usuario).filter_by(email="admin@condofix.local").first():
+    admin_email = os.environ.get("ADMIN_EMAIL", "admin@condofix.local")
+    admin_pass = os.environ.get("ADMIN_PASSWORD", "admin@1234") # Default only if not set
+    
+    if not db.session.query(Usuario).filter_by(email=admin_email).first():
         admin = Usuario(
             nome       = "Administrador",
-            email      = "admin@condofix.local",
+            email      = admin_email,
             perfil     = "admin"
         )
-        admin.definir_senha("admin@1234")
+        admin.definir_senha(admin_pass)
         db.session.add(admin)
 
     # Seed Morador
-    if not db.session.query(Usuario).filter_by(email="morador@condofix.local").first():
+    morador_email = os.environ.get("MORADOR_EMAIL", "morador@condofix.local")
+    morador_pass = os.environ.get("MORADOR_PASSWORD", "morador@1234")
+    
+    if not db.session.query(Usuario).filter_by(email=morador_email).first():
         morador = Usuario(
             nome       = "Morador Teste",
-            email      = "morador@condofix.local",
+            email      = morador_email,
             perfil     = "morador",
             unidade    = "101",
             bloco      = "A"
         )
-        morador.definir_senha("morador@1234")
+        morador.definir_senha(morador_pass)
         db.session.add(morador)
 
     # Seed Setores
-...
     setores_padrao = ["Elétrica", "Hidráulica", "Limpeza", "Pintura", "Geral", "Segurança", "Elevadores"]
     for nome in setores_padrao:
         if not db.session.query(Setor).filter_by(nome=nome).first():

@@ -11,6 +11,7 @@
             </div>
             <div class="card-body p-4">
                 <form method="POST" action="{{ url_for('chamados.criar') }}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-4">
                         <label for="titulo" class="form-label fw-semibold small">Título do Problema</label>
                         <div class="input-group has-validation">

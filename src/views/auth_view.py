@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session, current_app
 from ..models import Usuario, db
 from ..services.auth_service import autenticar, iniciar_sessao, encerrar_sessao
 
@@ -58,8 +58,10 @@ def cadastro():
             return render_template("auth/cadastro.html"), 400
 
         if Usuario.query.filter_by(email=email).first():
-            flash("E-mail já cadastrado.")
-            return render_template("auth/cadastro.html"), 409
+            # Generic message to avoid user enumeration
+            current_app.logger.warning(f"Tentativa de cadastro com e-mail já existente: {email}")
+            flash("Não foi possível concluir o cadastro. Verifique os dados ou tente outro e-mail.")
+            return render_template("auth/cadastro.html"), 400
 
         try:
             novo_usuario = Usuario(nome=nome, email=email, perfil="morador", unidade=unidade, bloco=bloco)
@@ -68,9 +70,10 @@ def cadastro():
             db.session.commit()
             flash("Conta criada com sucesso! Faça login.")
             return redirect(url_for("auth.login"))
-        except Exception:
+        except Exception as e:
             db.session.rollback()
-            flash("Erro interno. Tente novamente.")
+            current_app.logger.error(f"Erro ao cadastrar usuário: {str(e)}")
+            flash("Erro interno no servidor. Tente novamente mais tarde.")
             return render_template("auth/cadastro.html"), 500
 
     return render_template("auth/cadastro.html")

@@ -11,11 +11,16 @@ def processar_imagem(arquivo_form):
     if extensao not in allowed_extensions:
         raise ValueError(f"Extensão não permitida. Use: {', '.join(allowed_extensions)}.")
 
-    conteudo_bytes = arquivo_form.read()
+    # Prevent reading huge files into memory (DoS protection)
     max_size = current_app.config.get("MAX_IMAGE_SIZE_BYTES", 2 * 1024 * 1024)
-
-    if len(conteudo_bytes) > max_size:
+    arquivo_form.seek(0, 2) # Go to end of file
+    size = arquivo_form.tell() # Get current position (size)
+    arquivo_form.seek(0) # Go back to start
+    
+    if size > max_size:
         raise ValueError(f"Imagem excede o limite de {max_size // (1024*1024)} MB.")
+
+    conteudo_bytes = arquivo_form.read()
 
     base64_str = base64.b64encode(conteudo_bytes).decode("utf-8")
     mime_type = f"image/{extensao}"

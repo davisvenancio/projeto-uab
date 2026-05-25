@@ -121,6 +121,7 @@
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('chamados.atualizar_status', chamado_id=os.id) }}" class="needs-validation" novalidate>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <div class="mb-3">
                             <label class="form-label fw-semibold small">Próximo Passo</label>
                             <select name="status" class="form-select" required>
@@ -154,6 +155,7 @@
                 <div class="card-body">
                     <!-- Delegar -->
                     <form method="POST" action="{{ url_for('chamados.delegar', chamado_id=os.id) }}" class="mb-4 needs-validation" novalidate>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <label class="form-label fw-semibold small">Atribuir Técnico</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-person-gear"></i></span>
@@ -169,6 +171,7 @@
 
                     <!-- Registrar Custo -->
                     <form method="POST" action="{{ url_for('chamados.registrar_custo', chamado_id=os.id) }}" class="mb-4 needs-validation" novalidate>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <label class="form-label fw-semibold small">Registrar Custo Operacional</label>
                         <div class="input-group">
                             <span class="input-group-text">R$</span>
@@ -180,6 +183,7 @@
                     <!-- Rejeitar -->
                     {% if os.status == 'pendente' %}
                     <form method="POST" action="{{ url_for('chamados.rejeitar', chamado_id=os.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="btn btn-outline-danger w-100" data-confirm="Tem certeza que deseja REJEITAR este chamado? Esta ação é irreversível.">
                             <i class="bi bi-x-circle me-2"></i>Rejeitar Chamado
                         </button>
